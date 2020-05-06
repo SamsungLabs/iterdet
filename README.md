@@ -91,9 +91,11 @@ as long as you keep the MPL code in separate files.
 
 If you find this work is useful for your research, please cite our paper:
 
->@article{???,
+```
+@article{???,
   title={IterDet: Iterative Scheme for Object Detection in Crowded Environments},
-  author={Danila Rukhovich, Konstantin Sofiiuk, Danil Galeed, Olga Barinova, Anton Konushin},
+  author={Danila Rukhovich, Konstantin Sofiiuk, Danil Galeev, Olga Barinova, Anton Konushin},
   journal={arXiv preprint arXiv:20??.?????},
   year={2020}
 }
+```
