@@ -13,6 +13,8 @@ as presented in our paper:
 > Samsung AI Center Moscow <br>
 > https://arxiv.org/abs/20??.?????
 
+<p align="center"><img src="./demo/iterative/scheme.png" alt="drawing" width="90%"/></p>
+
 ### Installation
 
 This implementation is based on [mmdetection](https://github.com/open-mmlab/mmdetection) framework.
@@ -69,3 +71,7 @@ based on ResNet-50. Metrics are given for 2 iterations IterDet inference.
 [crowd_human_full]: ?
 [crowd_human_visible]: ? 
 [wider_person]: ?
+
+#### Example Detections
+
+<p align="center"><img src="./demo/iterative/demo.png" alt="drawing" width="90%"/></p>
