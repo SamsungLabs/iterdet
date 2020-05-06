@@ -61,7 +61,7 @@ based on ResNet-50. Metrics are given for 2 iterations IterDet inference.
 | Dataset              | Download Link                                  | Recall | AP    | mMR   |
 |:--------------------:|:----------------------------------------------:|:------:|:-----:|:-----:|
 | AdaptIS Toy V1       | [toy_v1.pth][toy_v1]                           | 99.60  | 99.25 |       |
-| AdaptIS Toy V2       | [toy_v1.pth][toy_v2]                           | 99.29  | 99.00 |       |
+| AdaptIS Toy V2       | [toy_v2.pth][toy_v2]                           | 99.29  | 99.00 |       |
 | CrowdHuman (full)    | [crowd_human_full.pth][crowd_human_full]       | 95.80  | 88.08 | 49.44 |
 | CrowdHuman (visible) | [crowd_human_visible.pth][crowd_human_visible] | 91.63  | 85.33 | 55.61 |
 | WiderPerson          | [wider_person.pth][wider_person]               | 97.15  | 91.95 | 40.78 |
@@ -72,6 +72,26 @@ based on ResNet-50. Metrics are given for 2 iterations IterDet inference.
 [crowd_human_visible]: ? 
 [wider_person]: ?
 
-#### Example Detections
+### Example Detections
 
 <p align="center"><img src="./demo/iterative/demo.png" alt="drawing" width="90%"/></p>
+
+
+### License
+
+The code is released under the MPL 2.0 License.
+MPL is a copyleft license that is easy to comply with.
+You must make the source code for any of your changes available under MPL,
+but you can combine the MPL software with proprietary code, 
+as long as you keep the MPL code in separate files.
+
+### Citation
+
+If you find this work is useful for your research, please cite our paper:
+
+>@article{???,
+  title={IterDet: Iterative Scheme for Object Detection in Crowded Environments},
+  author={Danila Rukhovich, Konstantin Sofiiuk, Danil Galeed, Olga Barinova, Anton Konushin},
+  journal={arXiv preprint arXiv:20??.?????},
+  year={2020}
+}
