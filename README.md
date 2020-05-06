@@ -75,7 +75,9 @@ based on ResNet-50. Metrics are given for 2 iterations IterDet inference.
 ### Example Detections
 
 <p align="center"><img src="./demo/iterative/demo.png" alt="drawing" width="90%"/></p>
-
+Examples of IterDet results on ToyV1, ToyV2, CrowdHuman (with full body
+annotataions), and WiderPerson. The boxes found on the first and second iterations are
+marked in green and yellow respectively.
 
 ### License
 
