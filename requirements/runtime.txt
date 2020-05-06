@@ -7,3 +7,5 @@ six
 terminaltables
 torch>=1.1
 torchvision
+pandas
+brambox
