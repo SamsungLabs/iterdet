@@ -45,7 +45,8 @@ class AnchorHead(nn.Module):
                      use_sigmoid=True,
                      loss_weight=1.0),
                  loss_bbox=dict(
-                     type='SmoothL1Loss', beta=1.0 / 9.0, loss_weight=1.0)):
+                     type='SmoothL1Loss', beta=1.0 / 9.0, loss_weight=1.0),
+                 final_crop=True):
         super(AnchorHead, self).__init__()
         self.in_channels = in_channels
         self.num_classes = num_classes
@@ -57,6 +58,7 @@ class AnchorHead(nn.Module):
             anchor_strides) if anchor_base_sizes is None else anchor_base_sizes
         self.target_means = target_means
         self.target_stds = target_stds
+        self.final_crop = final_crop
 
         self.use_sigmoid_cls = loss_cls.get('use_sigmoid', False)
         self.sampling = loss_cls['type'] not in ['FocalLoss', 'GHMC']
@@ -313,7 +315,7 @@ class AnchorHead(nn.Module):
                 bbox_pred = bbox_pred[topk_inds, :]
                 scores = scores[topk_inds, :]
             bboxes = delta2bbox(anchors, bbox_pred, self.target_means,
-                                self.target_stds, img_shape)
+                                self.target_stds, img_shape if self.final_crop else None)
             mlvl_bboxes.append(bboxes)
             mlvl_scores.append(scores)
         mlvl_bboxes = torch.cat(mlvl_bboxes)

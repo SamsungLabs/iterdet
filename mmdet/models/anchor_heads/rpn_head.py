@@ -12,8 +12,9 @@ from .anchor_head import AnchorHead
 @HEADS.register_module
 class RPNHead(AnchorHead):
 
-    def __init__(self, in_channels, **kwargs):
+    def __init__(self, in_channels, final_crop=True, **kwargs):
         super(RPNHead, self).__init__(2, in_channels, **kwargs)
+        self.final_crop = final_crop
 
     def _init_layers(self):
         self.rpn_conv = nn.Conv2d(
@@ -80,7 +81,7 @@ class RPNHead(AnchorHead):
                 anchors = anchors[topk_inds, :]
                 scores = scores[topk_inds]
             proposals = delta2bbox(anchors, rpn_bbox_pred, self.target_means,
-                                   self.target_stds, img_shape)
+                                   self.target_stds, img_shape if self.final_crop else None)
             if cfg.min_bbox_size > 0:
                 w = proposals[:, 2] - proposals[:, 0] + 1
                 h = proposals[:, 3] - proposals[:, 1] + 1

@@ -30,7 +30,8 @@ class BBoxHead(nn.Module):
                      use_sigmoid=False,
                      loss_weight=1.0),
                  loss_bbox=dict(
-                     type='SmoothL1Loss', beta=1.0, loss_weight=1.0)):
+                     type='SmoothL1Loss', beta=1.0, loss_weight=1.0),
+                 final_crop=True):
         super(BBoxHead, self).__init__()
         assert with_cls or with_reg
         self.with_avg_pool = with_avg_pool
@@ -44,6 +45,7 @@ class BBoxHead(nn.Module):
         self.target_stds = target_stds
         self.reg_class_agnostic = reg_class_agnostic
         self.fp16_enabled = False
+        self.final_crop = final_crop
 
         self.loss_cls = build_loss(loss_cls)
         self.loss_bbox = build_loss(loss_bbox)
@@ -150,7 +152,7 @@ class BBoxHead(nn.Module):
 
         if bbox_pred is not None:
             bboxes = delta2bbox(rois[:, 1:], bbox_pred, self.target_means,
-                                self.target_stds, img_shape)
+                                self.target_stds, img_shape if self.final_crop else None)
         else:
             bboxes = rois[:, 1:].clone()
             if img_shape is not None:

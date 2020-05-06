@@ -22,19 +22,22 @@ All our modifications against their v1.2.0 release are listed below:
  
  * configs/baseline/*
  * configs/iterative/*
+ * demo/iterative/*
  * mmdet/datasets/pipelines/transforms.py
  * mmdet/datasets/pipelines/formating.py
  * mmdet/datasets/crowd_human.py
+ * mmdet/models/anchor_heads/anchor_head.py
+ * mmdet/models/anchor_heads/rpn_head.py
+ * mmdet/models/bbox_heads/bbox_head.py
  * mmdet/models/backbones/resnet.py
  * mmdet/models/detectors/faster_rcnn.py
  * mmdet/models/detectors/retinanet.py
  * mmdet/models/detectors/single_stage.py
  * mmdet/models/detectors/two_stage.py
+ * tools/convert_datasets/crowd_human.py
  * tools/convert_datasets/toy.py
  * tools/convert_datasets/wider_person.py
- * tools/convert_datasets/crowd_human.py
  * requirements/runtime.txt
- * demo/iterative/*
 
 Please refer to original [INSTALL.md](docs/INSTALL.md) for installation.
 Do not forget to update the original github repository link, and install [requirements.txt](requirements.txt).
