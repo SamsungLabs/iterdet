@@ -96,7 +96,7 @@ test_cfg = dict(
         min_bbox_size=0),
     rcnn=dict(
         score_thr=0.05, nms=dict(type='nms', iou_thr=0.5), max_per_img=100),
-    n_iterations=1
+    n_iterations=2
 )
 # dataset settings
 dataset_type = 'CrowdHumanDataset'
