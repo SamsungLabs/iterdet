@@ -42,7 +42,7 @@ class CrowdHumanDataset(CustomDataset):
             if not len(annotation['ann']['bboxes_ignore']):
                 annotation['ann']['bboxes_ignore'] = np.zeros((0, 4), dtype=np.float32)
             annotation['ann']['labels_ignore'] = np.array(annotation['ann']['labels_ignore'], dtype=np.int64)
-        return results[:1]  # TODO: !!!
+        return results
 
 
     def evaluate(self,
