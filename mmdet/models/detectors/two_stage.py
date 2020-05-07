@@ -1,7 +1,7 @@
 import torch
 import torch.nn as nn
 
-# from mmdet.core import bbox2result, bbox2roi, build_assigner, build_sampler
+from mmdet.core import bbox2result
 from ..builder import DETECTORS, build_backbone, build_head, build_neck
 from .base import BaseDetector
 from .test_mixins import RPNTestMixin
@@ -206,14 +206,14 @@ class TwoStageDetector(BaseDetector, RPNTestMixin):
         else:
             assert not self.with_mask
             height, width = img.shape[2:]
-            history = torch.zeros((1, self.bbox_head.num_classes - 1, height, width), device=img.device)
+            history = torch.zeros((1, self.roi_head.bbox_head.num_classes - 1, height, width), device=img.device)
             det_bboxes = torch.zeros((0, 5), device=img.device)
             det_labels = torch.zeros((0,), dtype=torch.int64, device=img.device)
             for i in range(self.test_cfg.get('n_iterations', 1)):
                 x = self.extract_feat(img, history)
-                proposal_list = self.simple_test_rpn(x, img_metas, self.test_cfg.rpn)
-                bboxes, labels = self.simple_test_bboxes(
-                    x, img_metas, proposal_list, self.test_cfg.rcnn, rescale=rescale)
+                proposal_list = self.simple_test_rpn(x, img_metas)
+                bboxes, labels = self.roi_head.simple_test_bboxes(
+                    x, img_metas, proposal_list, self.roi_head.test_cfg, rescale=rescale)
                 if len(bboxes) == 0:
                     break
                 det_bboxes = torch.cat((det_bboxes, bboxes), dim=0)
@@ -226,8 +226,7 @@ class TwoStageDetector(BaseDetector, RPNTestMixin):
                     y_max = torch.min(torch.round(bbox[3]).int(), torch.tensor(height, device=img.device).int() - 1)
                     history[0, label, y_min: y_max + 1, x_min: x_max + 1] += 1
 
-            return bbox2result(det_bboxes, det_labels,
-                                   self.bbox_head.num_classes)
+            return bbox2result(det_bboxes, det_labels, self.roi_head.bbox_head.num_classes)
 
     def aug_test(self, imgs, img_metas, rescale=False):
         """Test with augmentations.
