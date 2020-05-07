@@ -1,133 +1,105 @@
-# MMDetection
+# IterDet: Iterative Scheme for Object Detection in Crowded Environments
 
-**News**: We released the technical report on [ArXiv](https://arxiv.org/abs/1906.07155).
+This project hosts the code for implementing the IterDet scheme for object detection,
+as presented in our paper:
 
-Documentation: https://mmdetection.readthedocs.io/
+> **IterDet: Iterative Scheme for Object Detection in Crowded Environments**<br>
+> [Danila Rukhovich](https://github.com/filaPro),
+> [Konstantin Sofiiuk](https://github.com/ksofiyuk),
+> [Danil Galeev](https://github.com/denemmy),
+> [Olga Barinova](https://github.com/OlgaBarinova),
+> [Anton Konushin](https://scholar.google.com/citations?user=ZT_k-wMAAAAJ)
+> <br>
+> Samsung AI Center Moscow <br>
+> https://arxiv.org/abs/20??.?????
 
-## Introduction
+<p align="center"><img src="./demo/iterative/scheme.png" alt="drawing" width="90%"/></p>
 
-The master branch works with **PyTorch 1.3 to 1.5**.
-The old v1.x branch works with PyTorch 1.1 to 1.4, but v2.0 is strongly recommended for faster speed, higher performance, better design and more friendly usage.
+### Installation
 
-MMDetection is an open source object detection toolbox based on PyTorch. It is
-a part of the OpenMMLab project developed by [Multimedia Laboratory, CUHK](http://mmlab.ie.cuhk.edu.hk/).
+This implementation is based on [mmdetection](https://github.com/open-mmlab/mmdetection) framework.
+All our modifications against their v1.2.0 release are listed below:
+ 
+ * configs/baseline/*
+ * configs/iterative/*
+ * demo/iterative/*
+ * mmdet/datasets/\_\_init\_\_.py
+ * mmdet/datasets/pipelines/transforms.py
+ * mmdet/datasets/pipelines/formating.py
+ * mmdet/datasets/crowd_human.py
+ * mmdet/models/anchor_heads/anchor_head.py
+ * mmdet/models/anchor_heads/rpn_head.py
+ * mmdet/models/bbox_heads/bbox_head.py
+ * mmdet/models/backbones/resnet.py
+ * mmdet/models/detectors/faster_rcnn.py
+ * mmdet/models/detectors/retinanet.py
+ * mmdet/models/detectors/single_stage.py
+ * mmdet/models/detectors/two_stage.py
+ * tools/convert_datasets/crowd_human.py
+ * tools/convert_datasets/toy.py
+ * tools/convert_datasets/wider_person.py
+ * requirements/runtime.txt
 
-![demo image](demo/coco_test_12510.jpg)
+Please refer to original [INSTALL.md](docs/INSTALL.md) for installation.
+Do not forget to update the original github repository link, and install [requirements.txt](requirements.txt).
 
-### Major features
+[Config](configs/iterative) files and [tools](tools/convert_datasets) 
+for converting annotations to COCO format are provided for the following datasets:
 
-- **Modular Design**
+ * AdaptIS [ToyV1](https://github.com/saic-vul/adaptis#toyv1-dataset) 
+   and [ToyV2](https://github.com/saic-vul/adaptis#toyv2-dataset)
+ * [CrowdHuman](https://www.crowdhuman.org/)
+ * [WiderPerson](http://www.cbsr.ia.ac.cn/users/sfzhang/WiderPerson/)
+ 
+### Get Started
 
-  We decompose the detection framework into different components and one can easily construct a customized object detection framework by combining different modules.
+Please see original [GETTING_STARTED.md](docs/GETTING_STARTED.md) for the basic usage examples.
+[Baseline](configs/baseline) and [iterative](configs/iterative) configs
+can be used for [train](tools/dist_train.sh) and [test](tools/dist_test.sh) scripts.
 
-- **Support of multiple frameworks out of box**
+### Models
 
-  The toolbox directly supports popular and contemporary detection frameworks, *e.g.* Faster RCNN, Mask RCNN, RetinaNet, etc.
+State-of-the-art models for all datasets are trained on top of Faster RCNN
+based on ResNet-50. Metrics are given for 2 iterations IterDet inference.
 
-- **High efficiency**
+| Dataset              | Download Link                                  | Recall | AP    | mMR   |
+|:--------------------:|:----------------------------------------------:|:------:|:-----:|:-----:|
+| AdaptIS Toy V1       | [toy_v1.pth][toy_v1]                           | 99.60  | 99.25 |       |
+| AdaptIS Toy V2       | [toy_v2.pth][toy_v2]                           | 99.29  | 99.00 |       |
+| CrowdHuman (full)    | [crowd_human_full.pth][crowd_human_full]       | 95.80  | 88.08 | 49.44 |
+| CrowdHuman (visible) | [crowd_human_visible.pth][crowd_human_visible] | 91.63  | 85.33 | 55.61 |
+| WiderPerson          | [wider_person.pth][wider_person]               | 97.15  | 91.95 | 40.78 |
 
-  All basic bbox and mask operations run on GPUs. The training speed is faster than or comparable to other codebases, including [Detectron2](https://github.com/facebookresearch/detectron2), [maskrcnn-benchmark](https://github.com/facebookresearch/maskrcnn-benchmark) and [SimpleDet](https://github.com/TuSimple/simpledet).
+[toy_v1]: ?
+[toy_v2]: ?
+[crowd_human_full]: ?
+[crowd_human_visible]: ? 
+[wider_person]: ?
 
-- **State of the art**
+### Example Detections
 
-  The toolbox stems from the codebase developed by the *MMDet* team, who won [COCO Detection Challenge](http://cocodataset.org/#detection-leaderboard) in 2018, and we keep pushing it forward.
+<p align="center"><img src="./demo/iterative/demo.png" alt="drawing" width="90%"/></p>
+Examples of IterDet results on ToyV1, ToyV2, CrowdHuman (with full body
+annotataions), and WiderPerson. The boxes found on the first and second iterations are
+marked in green and yellow respectively.
 
-Apart from MMDetection, we also released a library [mmcv](https://github.com/open-mmlab/mmcv) for computer vision research, which is heavily depended on by this toolbox.
+### License
 
-## License
+The code is released under the MPL 2.0 License.
+MPL is a copyleft license that is easy to comply with.
+You must make the source code for any of your changes available under MPL,
+but you can combine the MPL software with proprietary code, 
+as long as you keep the MPL code in separate files.
 
-This project is released under the [Apache 2.0 license](LICENSE).
+### Citation
 
-## Changelog
-
-v2.0.0 was released in 6/5/2020.
-Please refer to [changelog.md](docs/changelog.md) for details and release history.
-
-## Benchmark and model zoo
-
-Supported methods and backbones are shown in the below table.
-Results and models are available in the [model zoo](docs/model_zoo.md).
-
-|                    | ResNet   | ResNeXt  | SENet    | VGG      | HRNet |
-|--------------------|:--------:|:--------:|:--------:|:--------:|:-----:|
-| RPN                | ✓        | ✓        | ☐        | ✗        | ✓     |
-| Fast R-CNN         | ✓        | ✓        | ☐        | ✗        | ✓     |
-| Faster R-CNN       | ✓        | ✓        | ☐        | ✗        | ✓     |
-| Mask R-CNN         | ✓        | ✓        | ☐        | ✗        | ✓     |
-| Cascade R-CNN      | ✓        | ✓        | ☐        | ✗        | ✓     |
-| Cascade Mask R-CNN | ✓        | ✓        | ☐        | ✗        | ✓     |
-| SSD                | ✗        | ✗        | ✗        | ✓        | ✗     |
-| RetinaNet          | ✓        | ✓        | ☐        | ✗        | ✓     |
-| GHM                | ✓        | ✓        | ☐        | ✗        | ✓     |
-| Mask Scoring R-CNN | ✓        | ✓        | ☐        | ✗        | ✓     |
-| Double-Head R-CNN  | ✓        | ✓        | ☐        | ✗        | ✓     |
-| Grid R-CNN (Plus)  | ✓        | ✓        | ☐        | ✗        | ✓     |
-| Hybrid Task Cascade| ✓        | ✓        | ☐        | ✗        | ✓     |
-| Libra R-CNN        | ✓        | ✓        | ☐        | ✗        | ✓     |
-| Guided Anchoring   | ✓        | ✓        | ☐        | ✗        | ✓     |
-| FCOS               | ✓        | ✓        | ☐        | ✗        | ✓     |
-| RepPoints          | ✓        | ✓        | ☐        | ✗        | ✓     |
-| Foveabox           | ✓        | ✓        | ☐        | ✗        | ✓     |
-| FreeAnchor         | ✓        | ✓        | ☐        | ✗        | ✓     |
-| NAS-FPN            | ✓        | ✓        | ☐        | ✗        | ✓     |
-| ATSS               | ✓        | ✓        | ☐        | ✗        | ✓     |
-| FSAF               | ✓        | ✓        | ☐        | ✗        | ✓     |
-| PAFPN              | ✓        | ✓        | ☐        | ✗        | ✓     |
-
-Other features
-- [x] [CARAFE](configs/carafe/README.md)
-- [x] [DCNv2](configs/dcn/README.md)
-- [x] [Group Normalization](configs/gn/README.md)
-- [x] [Weight Standardization](configs/gn+ws/README.md)
-- [x] [OHEM](configs/faster_rcnn/faster_rcnn_r50_fpn_ohem_1x_coco.py)
-- [x] [Soft-NMS](configs/faster_rcnn/faster_rcnn_r50_fpn_soft_nms_1x_coco.py)
-- [x] [Generalized Attention](configs/empirical_attention/README.md)
-- [x] [GCNet](configs/gcnet/README.md)
-- [x] [Mixed Precision (FP16) Training](configs/fp16/README.md)
-- [x] [InstaBoost](configs/instaboost/README.md)
-- [x] [FSAF](configs/fsaf/README.md)
-- [x] [PAFPN](configs/pafpn/README.md)
-
-
-## Installation
-
-Please refer to [install.md](docs/install.md) for installation and dataset preparation.
-
-
-## Get Started
-
-Please see [getting_started.md](docs/getting_started.md) for the basic usage of MMDetection.
-
-## Contributing
-
-We appreciate all contributions to improve MMDetection. Please refer to [CONTRIBUTING.md](.github/CONTRIBUTING.md) for the contributing guideline.
-
-## Acknowledgement
-
-MMDetection is an open source project that is contributed by researchers and engineers from various colleges and companies. We appreciate all the contributors who implement their methods or add new features, as well as users who give valuable feedbacks.
-We wish that the toolbox and benchmark could serve the growing research community by providing a flexible toolkit to reimplement existing methods and develop their own new detectors.
-
-
-## Citation
-
-If you use this toolbox or benchmark in your research, please cite this project.
+If you find this work useful for your research, please cite our paper:
 
 ```
-@article{mmdetection,
-  title   = {{MMDetection}: Open MMLab Detection Toolbox and Benchmark},
-  author  = {Chen, Kai and Wang, Jiaqi and Pang, Jiangmiao and Cao, Yuhang and
-             Xiong, Yu and Li, Xiaoxiao and Sun, Shuyang and Feng, Wansen and
-             Liu, Ziwei and Xu, Jiarui and Zhang, Zheng and Cheng, Dazhi and
-             Zhu, Chenchen and Cheng, Tianheng and Zhao, Qijie and Li, Buyu and
-             Lu, Xin and Zhu, Rui and Wu, Yue and Dai, Jifeng and Wang, Jingdong
-             and Shi, Jianping and Ouyang, Wanli and Loy, Chen Change and Lin, Dahua},
-  journal= {arXiv preprint arXiv:1906.07155},
-  year={2019}
+@article{rukhovich2020iterdet,
+  title={IterDet: Iterative Scheme for Object Detection in Crowded Environments},
+  author={Danila Rukhovich, Konstantin Sofiiuk, Danil Galeev, Olga Barinova, Anton Konushin},
+  journal={arXiv preprint arXiv:20??.?????},
+  year={2020}
 }
 ```
-
-
-## Contact
-
-This repo is currently maintained by Kai Chen ([@hellock](http://github.com/hellock)), Yuhang Cao ([@yhcao6](https://github.com/yhcao6)), Wenwei Zhang ([@ZwwWayne](https://github.com/ZwwWayne)),
-Jiarui Xu ([@xvjiarui](https://github.com/xvjiarui)). Other core developers include Jiangmiao Pang ([@OceanPang](https://github.com/OceanPang)) and Jiaqi Wang ([@myownskyW7](https://github.com/myownskyW7)).

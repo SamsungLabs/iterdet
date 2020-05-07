@@ -5,6 +5,7 @@ import torch.nn as nn
 from ..builder import DETECTORS, build_backbone, build_head, build_neck
 from .base import BaseDetector
 from .test_mixins import RPNTestMixin
+from .single_stage import SumLayer
 
 
 @DETECTORS.register_module()
@@ -22,9 +23,16 @@ class TwoStageDetector(BaseDetector, RPNTestMixin):
                  roi_head=None,
                  train_cfg=None,
                  test_cfg=None,
-                 pretrained=None):
+                 pretrained=None,
+                 iterative=False):
         super(TwoStageDetector, self).__init__()
         self.backbone = build_backbone(backbone)
+        self.iterative = iterative
+        if self.iterative:
+            self.history_transform = nn.Sequential(
+                SumLayer(),
+                nn.Conv2d(in_channels=1, out_channels=64, kernel_size=3, stride=2, padding=1, bias=True),
+            )
 
         if neck is not None:
             self.neck = build_neck(neck)
@@ -70,22 +78,25 @@ class TwoStageDetector(BaseDetector, RPNTestMixin):
         if self.with_roi_head:
             self.roi_head.init_weights(pretrained)
 
-    def extract_feat(self, img):
+    def extract_feat(self, img, history=None):
         """Directly extract features from the backbone+neck
         """
-        x = self.backbone(img)
+        if history is not None:
+            history = self.history_transform(history)
+
+        x = self.backbone(img, history)
         if self.with_neck:
             x = self.neck(x)
         return x
 
-    def forward_dummy(self, img):
+    def forward_dummy(self, img, history=None):
         """Used for computing network flops.
 
         See `mmdetection/tools/get_flops.py`
         """
         outs = ()
         # backbone
-        x = self.extract_feat(img)
+        x = self.extract_feat(img, history)
         # rpn
         if self.with_rpn:
             rpn_outs = self.rpn_head(x)
@@ -104,6 +115,7 @@ class TwoStageDetector(BaseDetector, RPNTestMixin):
                       gt_bboxes_ignore=None,
                       gt_masks=None,
                       proposals=None,
+                      history=None,
                       **kwargs):
         """
         Args:
@@ -133,7 +145,7 @@ class TwoStageDetector(BaseDetector, RPNTestMixin):
         Returns:
             dict[str, Tensor]: a dictionary of loss components
         """
-        x = self.extract_feat(img)
+        x = self.extract_feat(img, history)
 
         losses = dict()
 
@@ -181,15 +193,41 @@ class TwoStageDetector(BaseDetector, RPNTestMixin):
         """Test without augmentation."""
         assert self.with_bbox, 'Bbox head must be implemented.'
 
-        x = self.extract_feat(img)
+        if not self.iterative:
+            x = self.extract_feat(img)
 
-        if proposals is None:
-            proposal_list = self.simple_test_rpn(x, img_metas)
+            if proposals is None:
+                proposal_list = self.simple_test_rpn(x, img_metas)
+            else:
+                proposal_list = proposals
+
+            return self.roi_head.simple_test(
+                x, proposal_list, img_metas, rescale=rescale)
         else:
-            proposal_list = proposals
+            assert not self.with_mask
+            height, width = img.shape[2:]
+            history = torch.zeros((1, self.bbox_head.num_classes - 1, height, width), device=img.device)
+            det_bboxes = torch.zeros((0, 5), device=img.device)
+            det_labels = torch.zeros((0,), dtype=torch.int64, device=img.device)
+            for i in range(self.test_cfg.get('n_iterations', 1)):
+                x = self.extract_feat(img, history)
+                proposal_list = self.simple_test_rpn(x, img_metas, self.test_cfg.rpn)
+                bboxes, labels = self.simple_test_bboxes(
+                    x, img_metas, proposal_list, self.test_cfg.rcnn, rescale=rescale)
+                if len(bboxes) == 0:
+                    break
+                det_bboxes = torch.cat((det_bboxes, bboxes), dim=0)
+                det_labels = torch.cat((det_labels, labels), dim=0)
+                for bbox, label in zip(bboxes, labels):
+                    bbox = bbox * img_metas[0]['scale_factor']
+                    x_min = torch.max(torch.round(bbox[0]).int(), torch.tensor(0, device=img.device).int())
+                    y_min = torch.max(torch.round(bbox[1]).int(), torch.tensor(0, device=img.device).int())
+                    x_max = torch.min(torch.round(bbox[2]).int(), torch.tensor(width, device=img.device).int() - 1)
+                    y_max = torch.min(torch.round(bbox[3]).int(), torch.tensor(height, device=img.device).int() - 1)
+                    history[0, label, y_min: y_max + 1, x_min: x_max + 1] += 1
 
-        return self.roi_head.simple_test(
-            x, proposal_list, img_metas, rescale=rescale)
+            return bbox2result(det_bboxes, det_labels,
+                                   self.bbox_head.num_classes)
 
     def aug_test(self, imgs, img_metas, rescale=False):
         """Test with augmentations.
