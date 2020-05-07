@@ -23,6 +23,7 @@ All our modifications against their v1.2.0 release are listed below:
  * configs/baseline/*
  * configs/iterative/*
  * demo/iterative/*
+ * mmdet/datasets/\_\_init\_\_.py
  * mmdet/datasets/pipelines/transforms.py
  * mmdet/datasets/pipelines/formating.py
  * mmdet/datasets/crowd_human.py
@@ -92,10 +93,10 @@ as long as you keep the MPL code in separate files.
 
 ### Citation
 
-If you find this work is useful for your research, please cite our paper:
+If you find this work useful for your research, please cite our paper:
 
 ```
-@article{???,
+@article{rukhovich2020iterdet,
   title={IterDet: Iterative Scheme for Object Detection in Crowded Environments},
   author={Danila Rukhovich, Konstantin Sofiiuk, Danil Galeev, Olga Barinova, Anton Konushin},
   journal={arXiv preprint arXiv:20??.?????},
