@@ -20,21 +20,19 @@ as presented in our paper:
 This implementation is based on [mmdetection](https://github.com/open-mmlab/mmdetection) framework.
 All our modifications against their v1.2.0 release are listed below:
  
- * configs/baseline/*
  * configs/iterative/*
  * demo/iterative/*
  * mmdet/datasets/\_\_init\_\_.py
  * mmdet/datasets/pipelines/transforms.py
  * mmdet/datasets/pipelines/formating.py
  * mmdet/datasets/crowd_human.py
- * mmdet/models/anchor_heads/anchor_head.py
- * mmdet/models/anchor_heads/rpn_head.py
- * mmdet/models/bbox_heads/bbox_head.py
+ * mmdet/models/dense_heads/anchor_head.py
+ * mmdet/models/dense_heads/rpn_head.py
+ * mmdet/models/roi_heads/bbox_heads/bbox_head.py
  * mmdet/models/backbones/resnet.py
- * mmdet/models/detectors/faster_rcnn.py
- * mmdet/models/detectors/retinanet.py
- * mmdet/models/detectors/single_stage.py
- * mmdet/models/detectors/two_stage.py
+ * mmdet/models/detectors/\_\_init\_\_.py
+ * mmdet/models/detectors/iterdet_faster_rcnn.py
+ * mmdet/models/detectors/iderdet_retinanet.py
  * tools/convert_datasets/crowd_human.py
  * tools/convert_datasets/toy.py
  * tools/convert_datasets/wider_person.py
@@ -43,7 +41,7 @@ All our modifications against their v1.2.0 release are listed below:
 Please refer to original [INSTALL.md](docs/INSTALL.md) for installation.
 Do not forget to update the original github repository link, and install [requirements.txt](requirements.txt).
 
-[Config](configs/iterative) files and [tools](tools/convert_datasets) 
+[Config](configs/iterdet) files and [tools](tools/convert_datasets) 
 for converting annotations to COCO format are provided for the following datasets:
 
  * AdaptIS [ToyV1](https://github.com/saic-vul/adaptis#toyv1-dataset) 
@@ -54,7 +52,7 @@ for converting annotations to COCO format are provided for the following dataset
 ### Get Started
 
 Please see original [GETTING_STARTED.md](docs/GETTING_STARTED.md) for the basic usage examples.
-[Baseline](configs/baseline) and [iterative](configs/iterative) configs
+[Baseline](configs/baseline) and [iterative](configs/iterdet) configs
 can be used for [train](tools/dist_train.sh) and [test](tools/dist_test.sh) scripts.
 
 ### Models

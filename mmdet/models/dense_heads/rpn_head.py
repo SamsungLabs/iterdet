@@ -11,9 +11,10 @@ from .anchor_head import AnchorHead
 @HEADS.register_module()
 class RPNHead(AnchorHead):
 
-    def __init__(self, in_channels, **kwargs):
+    def __init__(self, in_channels, final_crop=True, **kwargs):
         super(RPNHead, self).__init__(
             1, in_channels, background_label=0, **kwargs)
+        self.final_crop = final_crop
 
     def _init_layers(self):
         self.rpn_conv = nn.Conv2d(
@@ -99,7 +100,7 @@ class RPNHead(AnchorHead):
         anchors = torch.cat(mlvl_valid_anchors)
         rpn_bbox_pred = torch.cat(mlvl_bbox_preds)
         proposals = self.bbox_coder.decode(
-            anchors, rpn_bbox_pred, max_shape=img_shape)
+            anchors, rpn_bbox_pred, max_shape=(img_shape if self.final_crop else None))
         ids = torch.cat(level_ids)
 
         if cfg.min_bbox_size > 0:

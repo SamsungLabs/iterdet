@@ -11,7 +11,6 @@ class RetinaNet(SingleStageDetector):
                  bbox_head,
                  train_cfg=None,
                  test_cfg=None,
-                 pretrained=None,
-                 iterative=False):
+                 pretrained=None):
         super(RetinaNet, self).__init__(backbone, neck, bbox_head, train_cfg,
-                                        test_cfg, pretrained, iterative)
+                                        test_cfg, pretrained)

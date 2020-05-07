@@ -8,16 +8,16 @@ from collections import defaultdict
 
 # from .coco import CocoDataset
 from .custom import CustomDataset
-from .registry import DATASETS
-from mmdet.utils import print_log
+from .builder import DATASETS
+from mmcv.utils import print_log
 
 
-# @DATASETS.register_module
+# @DATASETS.register_module()
 # class CrowdHumanDataset(CocoDataset):
 #     CLASSES = ('smth',)
 
 
-@DATASETS.register_module
+@DATASETS.register_module()
 class CrowdHumanDataset(CustomDataset):
     def load_annotations(self, ann_file):
         data = mmcv.load(ann_file)
@@ -31,7 +31,7 @@ class CrowdHumanDataset(CustomDataset):
             bbox = annotation['bbox']
             bbox = [bbox[0], bbox[1], bbox[0] + bbox[2], bbox[1] + bbox[3]]
             results[image_id]['ann']['bboxes_ignore' if annotation['iscrowd'] else 'bboxes'].append(bbox)
-            results[image_id]['ann']['labels_ignore' if annotation['iscrowd'] else 'labels'].append(1)
+            results[image_id]['ann']['labels_ignore' if annotation['iscrowd'] else 'labels'].append(0)
         results = list(results.values())
         for annotation in results:
             annotation['ann']['bboxes'] = np.array(annotation['ann']['bboxes'], dtype=np.float32)
@@ -42,7 +42,7 @@ class CrowdHumanDataset(CustomDataset):
             if not len(annotation['ann']['bboxes_ignore']):
                 annotation['ann']['bboxes_ignore'] = np.zeros((0, 4), dtype=np.float32)
             annotation['ann']['labels_ignore'] = np.array(annotation['ann']['labels_ignore'], dtype=np.int64)
-        return results
+        return results[:1]  # TODO: !!!
 
 
     def evaluate(self,
@@ -52,13 +52,13 @@ class CrowdHumanDataset(CustomDataset):
                  iou_thr=0.5):
         # annotations to brambox
         true_df = defaultdict(list)
-        for img_info in self.img_infos:
+        for img_info in self.data_infos:
             bboxes = np.concatenate((img_info['ann']['bboxes'], img_info['ann']['bboxes_ignore']), axis=0)
             labels = np.concatenate((img_info['ann']['labels'], img_info['ann']['labels_ignore']), axis=0)
             ignores = [False] * len(img_info['ann']['bboxes']) + [True] * len(img_info['ann']['bboxes_ignore'])
             for bbox, label, ignore in zip(bboxes, labels, ignores):
                 true_df['image'].append(img_info['filename'])
-                true_df['class_label'].append(str(label))
+                true_df['class_label'].append(label)
                 true_df['id'].append(0)
                 true_df['x_top_left'].append(bbox[0])
                 true_df['y_top_left'].append(bbox[1])
@@ -73,8 +73,8 @@ class CrowdHumanDataset(CustomDataset):
         for i, image_results in enumerate(results):
             for j, class_detection in enumerate(image_results):
                 for detection in class_detection:
-                    predicted_df['image'].append(self.img_infos[i]['filename'])
-                    predicted_df['class_label'].append(str(j + 1))
+                    predicted_df['image'].append(self.data_infos[i]['filename'])
+                    predicted_df['class_label'].append(j)
                     predicted_df['id'].append(0)
                     predicted_df['x_top_left'].append(detection[0])
                     predicted_df['y_top_left'].append(detection[1])
@@ -103,7 +103,7 @@ class CrowdHumanDataset(CustomDataset):
     # After this the can be called from self.evaluate.
     def plot(self, true_df, predicted_df, iou_thr):
         # update path here !
-        image = mmcv.imread(os.path.join('data', 'adaptis_toy_v2', 'test', self.img_infos[0]['filename']))
+        image = mmcv.imread(os.path.join('data', 'adaptis_toy_v2', 'test', self.data_infos[0]['filename']))
         predicted_df.sort_values('confidence', ascending=False, inplace=True)
         predicted_df.reset_index(inplace=True)
 

@@ -1,8 +1,7 @@
 # model settings
 model = dict(
-    type='RetinaNet',
+    type='IterDetRetinaNet',
     pretrained='torchvision://resnet50',
-    iterative=True,
     backbone=dict(
         type='ResNet',
         depth=50,
@@ -10,6 +9,7 @@ model = dict(
         out_indices=(0, 1, 2, 3),
         frozen_stages=-1,
         norm_cfg=dict(type='BN', requires_grad=True),
+        norm_eval=True,
         style='pytorch'),
     neck=dict(
         type='FPN',
@@ -17,28 +17,30 @@ model = dict(
         out_channels=256,
         start_level=1,
         add_extra_convs=True,
-        num_outs=5,
-        norm_cfg=dict(type='BN')),
+        num_outs=5),
     bbox_head=dict(
         type='RetinaHead',
-        num_classes=2,
+        num_classes=1,
         in_channels=256,
         stacked_convs=4,
         feat_channels=256,
-        octave_base_scale=4,
-        scales_per_octave=3,
-        anchor_ratios=[1.0, 1.5, 2.0, 2.5, 3.0],
-        anchor_strides=[8, 16, 32, 64, 128],
-        target_means=[.0, .0, .0, .0],
-        target_stds=[1.0, 1.0, 1.0, 1.0],
+        anchor_generator=dict(
+            type='AnchorGenerator',
+            octave_base_scale=4,
+            scales_per_octave=3,
+            ratios=[0.5, 1.0, 2.0],
+            strides=[8, 16, 32, 64, 128]),
+        bbox_coder=dict(
+            type='DeltaXYWHBBoxCoder',
+            target_means=[.0, .0, .0, .0],
+            target_stds=[1.0, 1.0, 1.0, 1.0]),
         loss_cls=dict(
             type='FocalLoss',
             use_sigmoid=True,
             gamma=2.0,
             alpha=0.25,
             loss_weight=1.0),
-        loss_bbox=dict(type='SmoothL1Loss', beta=0.11, loss_weight=1.0),
-        final_crop=False))
+        loss_bbox=dict(type='L1Loss', loss_weight=1.0)))
 # training and testing settings
 train_cfg = dict(
     assigner=dict(
@@ -46,38 +48,38 @@ train_cfg = dict(
         pos_iou_thr=0.5,
         neg_iou_thr=0.4,
         min_pos_iou=0,
-        ignore_iof_thr=0.5),
+        ignore_iof_thr=-1),
     allowed_border=-1,
     pos_weight=-1,
     debug=False)
 test_cfg = dict(
-    nms_pre=2000,
+    nms_pre=1000,
     min_bbox_size=0,
-    score_thr=0.1,
-    nms=dict(type='nms', iou_thr=0.4),
-    max_per_img=1000,
+    score_thr=0.05,
+    nms=dict(type='nms', iou_thr=0.5),
+    max_per_img=100,
     n_iterations=2)
 # dataset settings
 dataset_type = 'CrowdHumanDataset'
-data_root = 'data/crowd_human/'
+data_root = 'data/adaptis_toy_v2/'
 img_norm_cfg = dict(
     mean=[123.675, 116.28, 103.53], std=[58.395, 57.12, 57.375], to_rgb=True)
 train_pipeline = [
     dict(type='LoadImageFromFile'),
     dict(type='LoadAnnotations', with_bbox=True),
-    dict(type='Resize', img_scale=[(1000, 600), (1666, 1000)], keep_ratio=True, final_crop=False),
+    dict(type='Resize', img_scale=(384, 384), keep_ratio=True),
     dict(type='RandomFlip', flip_ratio=0.5),
     dict(type='Normalize', **img_norm_cfg),
     dict(type='Pad', size_divisor=32),
-    dict(type='AddHistory', n_classes=1, disable_empty=True),
+    dict(type='AddHistory'),
     dict(type='DefaultFormatBundle'),
-    dict(type='Collect', keys=['img', 'history', 'gt_bboxes', 'gt_labels', 'gt_bboxes_ignore']),
+    dict(type='Collect', keys=['img', 'history', 'gt_bboxes', 'gt_labels']),
 ]
 test_pipeline = [
     dict(type='LoadImageFromFile'),
     dict(
         type='MultiScaleFlipAug',
-        img_scale=(1333, 800),
+        img_scale=(384, 384),
         flip=False,
         transforms=[
             dict(type='Resize', keep_ratio=True),
@@ -89,22 +91,25 @@ test_pipeline = [
         ])
 ]
 data = dict(
-    imgs_per_gpu=2,
+    samples_per_gpu=2,
     workers_per_gpu=2,
     train=dict(
-        type=dataset_type,
-        ann_file=data_root + 'annotation_full_train.json',
-        img_prefix=data_root + 'Images/',
-        pipeline=train_pipeline),
+        type='RepeatDataset',
+        times=2,
+        dataset=dict(
+            type=dataset_type,
+            ann_file=[data_root + 'train.json', data_root + 'val.json'],
+            img_prefix=[data_root + 'train/', data_root + 'val/'],
+            pipeline=train_pipeline)),
     val=dict(
         type=dataset_type,
-        ann_file=data_root + 'annotation_full_val.json',
-        img_prefix=data_root + 'Images/',
+        ann_file=data_root + 'test.json',
+        img_prefix=data_root + 'test/',
         pipeline=test_pipeline),
     test=dict(
         type=dataset_type,
-        ann_file=data_root + 'annotation_full_val.json',
-        img_prefix=data_root + 'Images/',
+        ann_file=data_root + 'test.json',
+        img_prefix=data_root + 'test/',
         pipeline=test_pipeline))
 # optimizer
 optimizer = dict(
@@ -115,7 +120,7 @@ optimizer_config = dict(grad_clip=None)
 # learning policy
 lr_config = dict(
     policy='step',
-    step=[16, 22])
+    step=[8, 11])
 checkpoint_config = dict(interval=1)
 # yapf:disable
 log_config = dict(
@@ -126,10 +131,10 @@ log_config = dict(
     ])
 # yapf:enable
 # runtime settings
-total_epochs = 24
+total_epochs = 12
 dist_params = dict(backend='nccl')
 log_level = 'INFO'
-work_dir = './work_dirs/iterative/crowd_human_full_retinanet_r50_fpn_2x'
+work_dir = './work_dirs/iterdet/toy_v2_retinanet_r50_fpn_2x'
 load_from = None
 resume_from = None
 workflow = [('train', 1)]

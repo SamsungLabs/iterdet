@@ -200,16 +200,11 @@ class Collect(object):
 class AddHistory(object):
     """Add empty history of size (w, h, n_classes)"""
 
-    def __init__(self, n_classes, disable_empty=False):
-        # TODO: disable_empty=False is currently unavaliable for TwoStageDetector because of bug with unused weights
-        self.n_classes = n_classes
-        self.disable_empty = disable_empty
-
     def __call__(self, results):
         height, width = results['img'].shape[:2]
-        history = np.zeros((height, width, self.n_classes), dtype=np.uint8)
+        history = np.zeros((height, width, 1), dtype=np.uint8)
         n_objects = len(results['gt_labels'])
-        n_old_objects = np.random.randint(0, n_objects + (0 if self.disable_empty else 1))
+        n_old_objects = np.random.randint(0, n_objects)
         index = np.random.permutation(n_objects)
         for i in index[:n_old_objects]:
             bbox = results['gt_bboxes'][i]
@@ -217,7 +212,7 @@ class AddHistory(object):
             y_min = max(int(round(bbox[1])), 0)
             x_max = min(int(round(bbox[2])), width - 1)
             y_max = min(int(round(bbox[3])), height - 1)
-            history[y_min: y_max + 1, x_min: x_max + 1, results['gt_labels'][i] - 1] += 1
+            history[y_min: y_max + 1, x_min: x_max + 1, 0] += 1
         new_gt_bboxes, new_gt_labels = [], []
         for i in index[n_old_objects:]:
             new_gt_bboxes.append(results['gt_bboxes'][i])

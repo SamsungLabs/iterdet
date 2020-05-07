@@ -201,7 +201,7 @@ class BBoxHead(nn.Module):
 
         if bbox_pred is not None:
             bboxes = self.bbox_coder.decode(
-                rois[:, 1:], bbox_pred, max_shape=img_shape if self.final_crop else None)
+                rois[:, 1:], bbox_pred, max_shape=(img_shape if self.final_crop else None))
         else:
             bboxes = rois[:, 1:].clone()
             if img_shape is not None:
