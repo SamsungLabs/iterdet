@@ -18,7 +18,7 @@ as presented in our paper:
 ### Installation
 
 This implementation is based on [mmdetection](https://github.com/open-mmlab/mmdetection) framework.
-All our modifications against their v1.2.0 release are listed below:
+All our modifications against their `v1.2.0` release are listed below:
  
  * configs/baseline/*
  * configs/iterative/*
@@ -42,6 +42,7 @@ All our modifications against their v1.2.0 release are listed below:
 
 Please refer to original [INSTALL.md](docs/INSTALL.md) for installation.
 Do not forget to update the original github repository link, and install [requirements.txt](requirements.txt).
+For `v2.0.0` release follow `master` branch.
 
 [Config](configs/iterative) files and [tools](tools/convert_datasets) 
 for converting annotations to COCO format are provided for the following datasets:
@@ -70,11 +71,11 @@ based on ResNet-50. Metrics are given for 2 iterations IterDet inference.
 | CrowdHuman (visible) | [crowd_human_visible.pth][crowd_human_visible] | 91.63  | 85.33 | 55.61 |
 | WiderPerson          | [wider_person.pth][wider_person]               | 97.15  | 91.95 | 40.78 |
 
-[toy_v1]: ?
-[toy_v2]: ?
-[crowd_human_full]: ?
-[crowd_human_visible]: ? 
-[wider_person]: ?
+[toy_v1]: https://github.com/saic-vul/iterdet/releases/download/v1.2.0/toy_v1_faster_rcnn_r50_fpn_2x.pth
+[toy_v2]: https://github.com/saic-vul/iterdet/releases/download/v1.2.0/toy_v2_faster_rcnn_r50_fpn_2x.pth
+[crowd_human_full]: https://github.com/saic-vul/iterdet/releases/download/v1.2.0/crowd_human_full_faster_rcnn_r50_fpn_2x.pth
+[crowd_human_visible]: https://github.com/saic-vul/iterdet/releases/download/v1.2.0/crowd_human_visible_faster_rcnn_r50_fpn_2x.pth 
+[wider_person]: https://github.com/saic-vul/iterdet/releases/download/v1.2.0/wider_person_faster_rcnn_r50_fpn_2x.pth
 
 ### Example Detections
 
