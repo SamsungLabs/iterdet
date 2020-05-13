@@ -18,7 +18,9 @@ as presented in our paper:
 ### Installation
 
 This implementation is based on [mmdetection](https://github.com/open-mmlab/mmdetection) framework.
-All our modifications against their `v2.0.0` release are listed below:
+
+<details>
+ <summary>All our modifications against their `v2.0.0` release are listed below:</summary> 
  
  * configs/iterative/*
  * demo/iterative/*
@@ -37,8 +39,10 @@ All our modifications against their `v2.0.0` release are listed below:
  * tools/convert_datasets/toy.py
  * tools/convert_datasets/wider_person.py
  * requirements/runtime.txt
+ 
+</details>
 
-Please refer to original [INSTALL.md](docs/INSTALL.md) for installation.
+Please refer to original [install.md](docs/install.md) for installation.
 Do not forget to update the original github repository link, and install [requirements.txt](requirements.txt).
 For `v1.2.0` release follow `v1` branch.
 
@@ -52,9 +56,8 @@ for converting annotations to COCO format are provided for the following dataset
  
 ### Get Started
 
-Please see original [GETTING_STARTED.md](docs/GETTING_STARTED.md) for the basic usage examples.
-[Baseline](configs/baseline) and [iterative](configs/iterdet) configs
-can be used for [train](tools/dist_train.sh) and [test](tools/dist_test.sh) scripts.
+Please see original [getting_started.md](docs/getting_started.md) for the basic usage examples.
+Iterdet [configs](configs/iterdet) can be used for [train](tools/dist_train.sh) and [test](tools/dist_test.sh) scripts.
 
 ### Models
 
