@@ -11,7 +11,7 @@ as presented in our paper:
 > [Anton Konushin](https://scholar.google.com/citations?user=ZT_k-wMAAAAJ)
 > <br>
 > Samsung AI Center Moscow <br>
-> https://arxiv.org/abs/20??.?????
+> https://arxiv.org/abs/2005.05708
 
 <p align="center"><img src="./demo/iterative/scheme.png" alt="drawing" width="90%"/></p>
 
@@ -98,7 +98,7 @@ If you find this work useful for your research, please cite our paper:
 @article{rukhovich2020iterdet,
   title={IterDet: Iterative Scheme for Object Detection in Crowded Environments},
   author={Danila Rukhovich, Konstantin Sofiiuk, Danil Galeev, Olga Barinova, Anton Konushin},
-  journal={arXiv preprint arXiv:20??.?????},
+  journal={arXiv preprint arXiv:2005.05708},
   year={2020}
 }
 ```
