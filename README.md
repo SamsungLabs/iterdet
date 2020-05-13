@@ -57,8 +57,13 @@ for converting annotations to COCO format are provided for the following dataset
 ### Get Started
 
 Please see original [getting_started.md](docs/getting_started.md) for the basic usage examples.
-Iterdet [configs](configs/iterdet) can be used for [train](tools/dist_train.sh) and [test](tools/dist_test.sh) scripts.
+Iterdet [configs](configs/iterdet) can be used for [train](tools/dist_train.sh) and [test](tools/dist_test.sh) scripts:
 
+```shell script
+bash tools/dist_train.sh configs/iterdet/crowd_human_full_faster_rcnn_r50_fpn_2x.py 8 --validate
+bash tools/dist_test.sh configs/iterdet/crowd_human_full_faster_rcnn_r50_fpn_2x.py \
+    work_dirs/iterdet/crowd_human_full_faster_rcnn_r50_fpn_2x/latest.pth 8
+```
 ### Models
 
 State-of-the-art models for all datasets are trained on top of Faster RCNN
