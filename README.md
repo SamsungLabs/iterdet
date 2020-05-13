@@ -40,7 +40,7 @@ All our modifications against their `v2.0.0` release are listed below:
 
 Please refer to original [INSTALL.md](docs/INSTALL.md) for installation.
 Do not forget to update the original github repository link, and install [requirements.txt](requirements.txt).
-For `v1.2.0` release follow `bmvc2020` branch.
+For `v1.2.0` release follow `v1` branch.
 
 [Config](configs/iterdet) files and [tools](tools/convert_datasets) 
 for converting annotations to COCO format are provided for the following datasets:
