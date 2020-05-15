@@ -1,4 +1,5 @@
 [![PWC](https://img.shields.io/endpoint.svg?url=https://paperswithcode.com/badge/iterdet-iterative-scheme-for-objectdetection/object-detection-on-crowdhuman-full-body)](https://paperswithcode.com/sota/object-detection-on-crowdhuman-full-body?p=iterdet-iterative-scheme-for-objectdetection)
+[![PWC](https://img.shields.io/endpoint.svg?url=https://paperswithcode.com/badge/iterdet-iterative-scheme-for-objectdetection/object-detection-on-widerperson)](https://paperswithcode.com/sota/object-detection-on-widerperson?p=iterdet-iterative-scheme-for-objectdetection)
 
 # IterDet: Iterative Scheme for Object Detection in Crowded Environments
 
