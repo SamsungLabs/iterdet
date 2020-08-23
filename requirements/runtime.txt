@@ -9,3 +9,4 @@ torch==1.5.0
 torchvision==0.6.0
 pandas==1.0.0
 brambox==3.0.0
+opencv-python==4.2.0.34
