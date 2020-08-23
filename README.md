@@ -42,6 +42,7 @@ This implementation is based on [mmdetection](https://github.com/open-mmlab/mmde
  * tools/convert_datasets/toy.py
  * tools/convert_datasets/wider_person.py
  * requirements/runtime.txt
+ * docker/Dockerfile
  
 </details>
 
