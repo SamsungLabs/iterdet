@@ -107,10 +107,11 @@ as long as you keep the MPL code in separate files.
 If you find this work useful for your research, please cite our paper:
 
 ```
-@article{rukhovich2020iterdet,
+@inproceedings{rukhovich2021iterdet,
   title={IterDet: Iterative Scheme for Object Detection in Crowded Environments},
   author={Danila Rukhovich, Konstantin Sofiiuk, Danil Galeev, Olga Barinova, Anton Konushin},
-  journal={arXiv preprint arXiv:2005.05708},
-  year={2020}
+  booktitle={Structural, Syntactic, and Statistical Pattern Recognition: Joint IAPR International Workshops, S+ SSPR 2020, Padua, Italy, January 21--22, 2021, Proceedings},
+  pages={344},
+  organization={Springer Nature}
 }
 ```
