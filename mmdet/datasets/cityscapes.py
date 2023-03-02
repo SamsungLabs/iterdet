@@ -108,7 +108,7 @@ class CityscapesDataset(CocoDataset):
         try:
             import cityscapesscripts.helpers.labels as CSLabels
         except ImportError:
-            raise ImportError('Please run "pip install citscapesscripts" to '
+            raise ImportError('Please run "pip install cityscapesscripts" to '
                               'install cityscapesscripts first.')
         result_files = []
         os.makedirs(outfile_prefix, exist_ok=True)
@@ -237,7 +237,7 @@ class CityscapesDataset(CocoDataset):
         try:
             import cityscapesscripts.evaluation.evalInstanceLevelSemanticLabeling as CSEval  # noqa
         except ImportError:
-            raise ImportError('Please run "pip install citscapesscripts" to '
+            raise ImportError('Please run "pip install cityscapesscripts" to '
                               'install cityscapesscripts first.')
         msg = 'Evaluating in Cityscapes style'
         if logger is None:
