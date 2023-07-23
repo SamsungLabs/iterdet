@@ -5,7 +5,7 @@ numpy==1.18.1
 Pillow<=6.2.2
 six==1.14.0
 terminaltables==3.1.0
-torch==1.5.0
+torch==1.13.1
 torchvision==0.6.0
 pandas==1.0.0
 brambox==3.0.0
