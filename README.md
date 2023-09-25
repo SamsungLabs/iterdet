@@ -13,7 +13,7 @@ as presented in our paper:
 > [Olga Barinova](https://github.com/OlgaBarinova),
 > [Anton Konushin](https://scholar.google.com/citations?user=ZT_k-wMAAAAJ)
 > <br>
-> Samsung AI Center Moscow <br>
+> Samsung Research<br>
 > https://arxiv.org/abs/2005.05708
 
 <p align="center"><img src="./demo/iterative/scheme.png" alt="drawing" width="90%"/></p>
